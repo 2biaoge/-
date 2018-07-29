@@ -1,0 +1,93 @@
+存储单位:
+ 8 bit 位 ===1 byte 字节
+ 1024 byte ==1 KB 
+ 1024 KB ==1 MB  
+ 1024 MB ==1 GB  
+ 1024 GB ==1 TB
+ 1024 TB ==1 PB  (了解)
+
+Dos命令 
+  window键+R 打开运行窗口，然后输入cmd
+
+1  cd 命令
+ cd (change directory)  改变当前目录
+ cd .. 返回上一级目录
+ cd \  返回根目录
+ d:  切换到d盘  
+ e:  切换到e盘
+ f:  切换到f盘
+2  dir (directory) 命令 显示当前目录下的文件和文件夹
+   
+   ctrl + c 停止命令执行
+
+3 md (make directory) 命令 创建目录  
+   创建一级目录，也可以创建多级目录
+   md myFile
+   md myPhoto\aaa\bbb
+4 copy 命令  复制一个或一组文件到指定的目中  
+  copy aaa.txt myFile
+  copy myFile myPhoto
+  xcopy myFile myPhoto /s 包括子文件夹中内容
+
+5 rd (remove directory) 命令 删除目录
+  只能删除空目录 ，不能删除当前目录
+  rd myPhoto 删除myPhoto目录 ，只能是空目录
+  rd myFile\aaa\bbb 删除bbb目录
+  rd myFile\aaa  删除aaa目录
+6 del  (delete) 命令  删除一个或一组文件  
+
+  del myFile\aaa.txt 删除aaa.txt
+  del myFile\*  删除myFile下所有的文件
+
+7 cls  clear screen  清空屏幕
+
+8 exit  退出 
+
+9 mspaint  打开画图工具  （可以在运行窗口中输入）
+
+10 notepad 打开记事本 （可以在运行窗口中输入）
+
+进制 
+
+ 十进制 ： 逢10进1 
+           0   ..... 9  10
+
+ 二进制 ： 逢2进 1
+             0  1  10  11  100  101  110  111  1000  1001  1010  1011  1100  1101  1110  1111     111111111
+           
+对应的十进制 0  1   2   3   4    5    6    7     8    9     10    11    12    13    14     15        255
+
+
+
+  2转10 
+
+
+Jdk 目录介绍
+  bin  (binary) 二进制文件 exe程序  javac  java
+  db  (database) 数据库 
+  include  头文件
+  jre  java运行环境  Java Runtime Environment
+  lib  (library) 类库 jar包
+  javafx-src.zip  源码文件
+  src.zip  源码文件
+
+  ctrl+c 复制 
+  ctrl+v 粘贴
+  ctrl+x 剪切
+  ctrl+s 保存
+ 
+  
+
+%JAVA_HOME%\bin;   
+     
+
+16进制 
+  逢16进1 
+
+  0-9  10  11   12   13  14  15   16   17  18  19  20
+  0-9  A   B    C    D   E   F    10   11  12  13  14  
+
+  
+   
+
+ 
