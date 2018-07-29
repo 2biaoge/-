@@ -1,0 +1,23 @@
+标识符的命名规则
+	
+
+标识符的命名习惯
+  1 见名知意
+  2 变量名、方法名、参数名 第一个字母小写    驼峰式命名法
+      number
+      age
+      name
+      sex
+      address
+      myName
+      myAddress
+      bornDate
+  3 类名：单词首字母大写     帕斯卡(Pascal)命名法 
+      Hello
+      Person
+      Dog
+      Cat
+      Pig	
+  
+      	
+
