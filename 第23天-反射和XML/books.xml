@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Books>
+	<!-- 这是第一本书-->
+	<book id='1001'>
+		<name>java葵花宝典</name>
+		<author>东方不败</author>
+		<price>998</price>
+	</book>
+	<!-- 这是第二本书-->
+	<book id="1002">
+		<name>html宝典</name>
+		<author>令狐冲</author>
+		<price>98</price>
+	</book>
+</Books>

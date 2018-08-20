@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Books> 
+  <book id="1002"> 
+    <name>html宝典</name>  
+    <author>令狐冲</author>  
+    <price>98</price> 
+  </book>  
+  <book id="1003"> 
+    <name>android从入门到大神</name>  
+    <author>老张</author>  
+    <price>88.8</price> 
+  </book> 
+</Books>

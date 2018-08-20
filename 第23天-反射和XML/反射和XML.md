@@ -1,0 +1,696 @@
+### 反射
+
+#### 回顾：
+
+```
+
+```
+
+#### 今天任务
+
+```html
+1.反射
+2.XML语言
+3.解析XML
+```
+
+#### **教学目标**
+
+```html
+1.掌握反射
+2.了解XML语言
+3.掌握如何解析xml文档
+```
+
+
+
+#### 第一节：反射（Reflection）
+
+##### 2.1 为什么使用反射
+
+```html
+需求：
+	我公司定义了一组接口，然后第三方公司按照我公司的接口实现了一套功能，然后交给我们，但是我们公司的项目已经结束，如何实现动态加载第三方公司提供的功能。
+```
+
+##### 2.2 什么是反射
+
+```
+反射就是把Java类中的各种成分映射成一个个的java对象。例如，一个类有：成员变量，方法，构造方法，包等等信息，利用反射技术可以对一个类进行解剖，把各个组成部分映射成一个个对象。
+```
+
+##### 2.3 反射常用类
+
+- Class类—可获取类和类的成员信息 
+- Field类—可访问类的属性 
+- Method类—可调用类的方法 
+- Constructor类—可调用类的构造方法
+
+##### 2.4 使用反射的基本步骤
+
+​	1.导入java.lang.reflect.*
+
+​	2.获得需要操作的类的Java.lang.Class对象
+
+​	3.调用Class的方法获取Field、Method等对象
+
+​	4.使用反射API进行操作(设置属性﹑调用方法）
+
+#### 第二节：Class类
+
+##### **2.1 Class类是反射机制的起源和入口**
+
+* 每个类都有自己的Class对象
+* 用于获取与类相关的各种信息
+* 提供了获取类信息的相关方法
+* Class类继承自Object类
+
+
+
+##### **2.2 Class类存放类的结构信息**
+
+* 类名
+* 父类﹑接口
+* 方法﹑构造方法﹑属性
+* 注释
+
+
+
+##### **2.3 获取 Class对象的方式**
+
+第一种方式
+
+```java
+//方法1：对象.getClass()
+Student stu=new Student();
+Class clazz=stu.getClass();
+```
+
+第二种方式
+
+```java
+//方法2：类.class
+clazz= Student.class;
+clazz=String.class;
+```
+
+第三种方式
+
+```java
+//方法3：Class.forName()
+clazz=Class.forName("java.lang.String");
+clazz=Class.forName("java.util.Date");
+```
+
+##### 2.4 获取类的其他结构信息
+
+```java
+Class clazz = Class.forName("java.lang.Object");
+Field fields[ ] = clazz.getDeclaredFields();//获取Field 对象 
+Method methods[] = clazz.getDeclaredMethods();//获取Method 对象 
+Constructor constructors[ ] = clazz.getDeclaredConstructors();//获取Constructor对象 
+
+```
+
+##### 2.5 动态创建对象
+
+方法一：使用Class的newInstance()方法，仅适用于无参构造方法
+
+```java
+Class clazz=Class.forName("com.qf.reflection.Student");
+Object obj=clazz.newInstance();	
+```
+
+方法二：调用Constructor的newInstance()方法，适用所有构造方法
+
+```java
+Constructor cons = clazz.getConstructor(new Class[]{ String.class,  int.class, float.class });
+Object obj = cons.newInstance(new Object[ ] {"lkl", 32, 56.5f });
+```
+
+**练习一：**
+
+1 定义Student类，包含：姓名和年龄等属性，有参和无参构造方法，输出所有信息的方法
+
+2 使用多种方法生成一个Student类的Class对象
+
+3 使用Class类获取Student类的属性并输出
+
+4 通过有参(无参)构造方法动态创建Student类的对象
+
+
+
+##### 2.6 动态执行方法
+
+调用方法基本步骤：
+
+1.通过Class对象获取Method 对象
+
+2.调用Method对象的invoke()方法
+
+例如：
+
+```java
+Object invoke(Object obj,Object [] args);
+//object 返回值
+//obj 当前方法所属对象
+//args 当前方法的参数列表
+```
+
+
+
+##### 2.7 反射动态操作属性值
+
+操作属性的基本步骤
+
+1.通过Class对象获取Field 对象
+
+2.调用Field 对象的方法进行取值或赋值操作 
+
+| 方法                              | 说         明       |
+| ------------------------------- | ----------------- |
+| Xxx getXxx(Object obj)          | 获取基本类型的属性值        |
+| Object get(Object obj) )        | 得到引用类型属性值         |
+| void setXxx(Object obj,Xxx val) | 将obj对象的该属性设置成val值 |
+| void set(Object obj,object val) | 将obj对象的该属性设置成val值 |
+| void setAccessible（bool flag）   | 对获取到的属性设置访问权限     |
+
+#### 第三节：反射技术的优点和缺点
+
+​	**优点：**
+
+​	1.提高了Java程序的灵活性和扩展性，降低了耦合性，提高自适应能力
+
+​	2.允许程序创建和控制任何类的对象，无需提前硬编码目标类
+
+
+
+​	**缺点：**
+
+​	1.性能问题
+
+​	2.代码维护问题
+
+
+
+#### 第四节：反射案例
+
+
+
+```java
+
+public class Demo2 {
+	public static void main(String[] args) throws Exception{
+//		getClassObj();
+		//getConstructor();
+		getMethod();
+	}
+	/**
+	 * 获取类对象
+	 */
+	public static void getClassObj() throws Exception{
+		//第一种方法:使用类名.class 获取类对象
+		Class<?> class1= Person.class;
+		System.out.println(class1.hashCode());
+		//第二种方法:使用对象来获取类对象
+		Person zhangsan=new Person();
+		Class<?> class2=zhangsan.getClass();
+		System.out.println(class2.hashCode());
+		//第三种方式:使用Class.forname()获取类对象
+		Class<?> class3=Class.forName("com.qf.day25_2.Person");
+		System.out.println(class3.hashCode());
+	}
+	/**
+	 * 获取构造方法
+	 */
+	public static void getConstructor() throws Exception{
+		//1获取类对象
+		Class<?> class1=Class.forName("com.qf.day25_2.Person");
+		//2获取构造方法
+//		Constructor<?>[] constructor=class1.getConstructors();
+//		//3遍历
+//		for (Constructor<?> c : constructor) {
+//			System.out.println(c);
+//		}
+		//4获取一个无参构造方法
+		Constructor<?> constructor=class1.getConstructor();
+		System.out.println(constructor);
+		//5获取带参构造方法
+		Constructor<?> constructor2=class1.getConstructor(String.class,int.class,String.class);
+		System.out.println(constructor2);
+		
+		//6使用构造方法构造对象
+		Object zhangsan=constructor.newInstance();
+		Object lisi=constructor2.newInstance("李四",20,"女");
+		Object wangwu=class1.newInstance();//调用无参构造
+		//Person wangwu=new Person("王五",20, "男");
+		System.out.println(zhangsan.toString());
+		System.out.println(lisi.toString());
+		System.out.println(wangwu);
+		//System.out.println(wangwu);
+	}
+	/**
+	 * 获取方法
+	 */
+	public static void getMethod() throws Exception{
+		//1获取类对象
+		Class<?> class1=Class.forName("com.qf.day25_2.Person");
+		//2获取方法 (获取所有的公开的方法，包括从父类继承过来的)
+		//Method[] methods=class1.getMethods();
+		//获取类中所有的方法，包括私有的，不包括继承的方法
+//		Method[] methods=class1.getDeclaredMethods();
+//		for (Method method : methods) {
+//			System.out.println(method);
+//		}
+		
+		Constructor<?> constructor=class1.getConstructor(String.class,int.class,String.class);
+		Object zhangsan=constructor.newInstance("zhangsan",20,"男");
+		
+		//3获取一个无参方法
+		Method method=class1.getDeclaredMethod("show");
+		//4调用方法
+		method.invoke(zhangsan);
+		//5获取一个带参方法
+		Method method2=class1.getDeclaredMethod("show", String.class);
+		method2.invoke(zhangsan, "郑州");
+		//6获取带返回值的方法
+		Method method3=class1.getDeclaredMethod("getInfo");
+		String s=(String) method3.invoke(zhangsan);
+		System.out.println(s);
+		//7获取静态方法
+		Method method4=class1.getDeclaredMethod("showCountry");
+		method4.invoke(null);
+		//8获取私有方法
+		Method method5=class1.getDeclaredMethod("privateMethod");
+		//取消访问性检查
+		method5.setAccessible(true);
+		method5.invoke(zhangsan);
+		//9获取属性
+		Field field=class1.getDeclaredField("name");
+		field.setAccessible(true);
+		Object lisi=class1.newInstance();
+		field.set(lisi, "李四");
+		String name= (String) field.get(lisi);
+		System.out.println(name);
+		}
+}
+```
+
+
+
+#### 第五节：XML语言
+
+##### 5.1为什么使用XML
+
+问题1：Windows系统的应用怎么和Linux系统中的应用交互数据
+
+问题2：其它诸如此类跨平台、跨操作系统的数据交互问题……
+
+使用XML解决。
+
+##### 5.2XML概述
+
+可扩展性标记语言（eXtensible Markup Language）,文件扩展名.xml
+
+用途：描述、传输数据
+
+使用场合：
+
+​	◦持久化存储数据
+
+​	◦数据交换
+
+​	◦数据配置
+
+示例：persons.xml
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<Person>
+    <ID>1002</ID>
+    <Name>曹操</Name>
+    <Age>20</Age>
+    <!-- -->
+    <ID>1001</ID>
+    <Name>周瑜</Name>
+    <Age>22</Age>
+</Person>
+```
+
+##### 5.3XML语法
+
+**文档类型**
+
+```xml
+在编写XML文档时，需要先使用文档声明，声明XML文档的类型。
+最简单的声明语法：
+	<?xml version="1.0" ?>
+
+用encoding属性说明文档的字符编码：
+
+	<?xml version="1.0" encoding="GBK" ?>  
+```
+
+**元素**
+
+```
+XML元素指XML文件中出现的标签，一个标签分为开始标签和结束标签，一个标签有如下几种书写形式，例如：
+	包含标签体：<a>www.qianfeng.cn</a>
+	不含标签体的：<a></a>, 简写为：<a/>
+一个标签中也可以嵌套若干子标签。但所有标签必须合理的嵌套，绝对不允许交叉嵌套 ，例如：
+	<a>welcome to <b>www.qianfeng.org</a></b>
+格式良好的XML文档必须有且仅有一个根标签，其它标签都是这个根标签的子孙标签。 
+```
+
+```
+对于XML标签中出现的所有空格和换行，XML解析程序都会当作标签内容进行处理。例如：下面两段内容的意义是不一样的。
+<Name>
+	冰冰
+</Name>
+和
+<Name>冰冰</Name>
+```
+
+```
+一个XML元素可以包含字母、数字以及其它一些可见字符，但必须遵守下面的一些规范：
+名称可以含字母、数字以及其他的字符
+名称不能以数字或者标点符号开始
+名称不能以字符 “xml”（或者 XML、Xml）开始
+名称不能包含空格
+
+使用浏览器验证文件格式有效性。
+```
+
+**属性**
+
+```java
+一个标签可以有多个属性，每个属性都有它自己的名称和取值，例如：
+<Student name=“zhangsan”>
+属性值一定要用双引号（"）或单引号（'）引起来
+定义属性必须遵循与标签相同的命名规范 
+在XML技术中，标签属性所代表的信息，也可以被改成用子元素的形式来描述，例如：
+<Student>
+ 	<name>text</name>
+</Student>
+```
+
+**注释**
+
+```
+Xml文件中的注释采用：“<!--注释-->” 格式。
+注意：
+	XML声明之前不能有注释
+	注释不能嵌套
+```
+
+**格式良好的XML文档**
+
+```
+必须有XML声明语句  
+必须有且仅有一个根元素
+标签大小写敏感
+属性值用双引号或单引号
+标签成对
+元素正确嵌套
+```
+
+上机练习：
+
+使用XML文件描述学生信息
+
+Student( 学号stuNo, 姓名 name, 年龄 age, 班级 clazz )
+
+
+
+#### 第六节：XML解析
+
+**XML解析方式**
+
+◦1DOM解析
+
+​	使用DOM4J(DOM For Java)实现DOM解析  
+
+◦2SAX解析(了解即可)
+
+pull解析和Sax类似
+
+**DOM和SAX比较**
+
+```
+DOM解析 (Document Object Model) 文档对象模型
+	易用性强，使用DOM时，将把所有的XML文档信息都存于内存中，并且遍历简单，支持XPath，增强了易用性。
+	效率低，解析速度慢，内存占用量过高，对于大文件来说几乎不可能使用
+	支持增删改查
+SAX解析（Simple API for Xml）
+	SAX是一个用于处理XML事件驱动的“推”模型，虽然它不是W3C标准，但它却是一个得到了广泛认可的API
+	SAX模型最大的优点是内存消耗小
+	只适合读取
+```
+
+##### 6.1使用DOM4J解析
+
+```
+Dom4j是一个简单、灵活的开放源代码的库。Dom4j是一个非常优秀的Java XML API，具有性能优异、功能强大和极易使用的特点。现在很多软件采用的Dom4j，例如Hibernate，包括sun公司自己的JAXM也用了Dom4j。
+使用Dom4j开发，需下载Dom4j相应的jar文件
+```
+
+**获取Document对象**
+
+ ```java
+SAXReader reader = new SAXReader();
+Document  document= reader.read(new File("input.xml"));
+ ```
+
+**节点对象操作**    
+
+```java
+1.获取文档的根节点.
+      Element root = document.getRootElement();
+2.取得某个节点的子节点.
+	Element element=node.element(“书名");
+3.取得节点的文字
+      String text=node.getText();
+4.取得某节点下所有名为“member”的子节点，并进行遍历.
+	List nodes = rootElm.elements(“book");
+	for (Iterator it = nodes.iterator(); it.hasNext();) {
+		Element elm = (Element) it.next();
+		do something
+	}
+```
+
+**节点属性操作**        
+
+```java
+1.取得某节点下的某属性
+	Element root=document.getRootElement();   
+	//属性名name
+    Attribute attribute=root.attribute("size");
+2.取得属性的文字
+	String text=attribute.getText();
+3.删除某属性
+	Attribute attribute=root.attribute("size");
+	root.remove(attribute);
+```
+
+##### 案例1 读取xml文件
+
+```java
+public static void readxml() throws Exception{
+		//1创建SaxReader
+		SAXReader reader=new SAXReader();
+		//2获取Document对象
+		Document document=reader.read(new FileReader("src\\books2.xml"));
+		//3获取根节点
+		Element root=document.getRootElement();//books
+		//System.out.println(root.getName());
+		//4获取book集合
+		List<Element> bookList=root.elements("book");
+		for (Element b : bookList) {
+			//System.out.println(b.getName());
+			//5获取属性
+			String id=b.attributeValue("id");
+			String name=b.element("name").getText();
+			String author=b.element("author").getText();
+			String price=b.elementText("price");
+			Book book=new Book(Integer.parseInt(id), name, author, Double.parseDouble(price));
+			System.out.println(book.toString());
+		}
+	}
+```
+
+##### 案例2 写入XML文件
+
+```java
+//2写入xml文件
+	
+	public static void writeXml() throws Exception{
+		//1 创建SaxReader
+		SAXReader reader=new SAXReader();
+		//2读取
+		Document document=reader.read(new FileReader("src\\books2.xml"));
+		//3获取根节点
+		Element root = document.getRootElement();
+		//4添加节点
+		Element newbook = root.addElement("book");
+		//5添加属性
+		newbook.addAttribute("id","1003");
+		//6newbook添加name author price
+		newbook.addElement("name").setText("android开发");;
+		newbook.addElement("author").setText("老张");;
+		newbook.addElement("price").setText("88.8");;
+		
+		//7写入文件中
+		OutputFormat format=OutputFormat.createPrettyPrint();//创建一个漂亮的输出格式
+		format.setEncoding("utf-8");
+		XMLWriter writer=new XMLWriter(new FileWriter("src\\books2.xml"), format);
+		writer.write(document);
+		writer.close();
+		System.out.println("写入成功");
+		
+	}
+```
+
+##### 案例3 修改和删除xml文件
+
+```java
+//3 修改和删除xml文件内容
+	
+	public static void updateXml() throws Exception{
+		//1创建Xmlreader
+		SAXReader reader=new SAXReader();
+		//2文档
+		Document document = reader.read(new FileReader("src\\books2.xml"));
+		//3获取根节点
+		Element root = document.getRootElement();
+		
+		
+		//4获取id=1003的book
+		List<Element> elements = root.elements("book");
+		Element bookEle = elements.get(2);
+		bookEle.element("name").setText("android从入门到大神");
+		Element first =elements.get(0);
+		//5删除
+		root.remove(first);
+		
+		//6写入
+		OutputFormat format=OutputFormat.createPrettyPrint();
+		format.setEncoding("utf-8");
+		XMLWriter writer=new XMLWriter(new FileWriter("src\\books2.xml"), format);
+		writer.write(document);
+		writer.close();
+		
+		System.out.println("修改删除完毕");
+	}
+```
+
+**总结：**
+
+1 反射：其实java中一种解剖技术，获取类中的属性、方法、构造方法等信息
+
+2 获取类的类对象 
+
+  	 1》创建对象，调用对象的getClass()方法
+
+​	 2》类名.class属性
+
+​	 3》 Class.forName("类的全名称");
+
+3   获取构造方法
+
+ Constructor[] cs=      class1.getConstructors();
+
+   Constructor c2=       class1.getConstructor(String.class,int.class,String.class);
+
+  c2.newInstance("xxx",20,"男");
+
+4 获取方法
+
+   class1.getMethods();
+
+Method method=   class1.getMethod(“show”);
+
+method.invoke(obj);
+
+5 获取属性
+
+  Field nameField=class1.getDeclaredField("name");
+
+ nameField.setAccessable(true);
+
+ nameField.set(obj,"xxx");
+
+nameFiled.get(obj);
+
+
+
+6 XML 可扩展标记语言  
+
+  用途：描述 传输数据
+
+ 使用场合： 持久化数据
+
+​                    传输数据
+
+​                     配置文件
+
+ 语法  ：
+
+​    声明  <?xml version="1.0" encoding="utf-8"?>
+
+​    标签 
+
+​    属性
+
+​    注释
+
+   格式良好的文档 ：
+
+​    1 必须有声明
+
+​    2 标签区分大小写
+
+​    3 有且只有一个根节点
+
+   4 属性值用双引号和单引号
+
+   5  成对出现
+
+   6 正确嵌套
+
+
+
+xml解析
+
+  DOM解析（Document Object Model）
+
+​	创建DOm树，易于操作，遍历 、删除、修改、写入
+
+​        内存大
+
+  Sax解析 (Simple API for XML)
+
+​         Sax只能读取文件 ，不能删除 修改
+
+​         内存小
+
+  DOM4J    (four for)
+
+   
+
+#### 第七节：默写：
+
+1获取类对象的三种方式
+
+#### 第八节：作业：
+
+1 设计一个Student类，属性有：id，name,age,borndate,使用反射创建对象。
+
+2 使用反射调用方法show显示学生信息。
+
+3 使用反射调用name属性。
+
+#### 第九节：面试题：
+
+1 简述Java中的反射使用
+
+2 JAVA常用反射API
